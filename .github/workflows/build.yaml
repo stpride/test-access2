@@ -1,0 +1,49 @@
+name: Build
+run-name: Deploy branch ${{ github.ref_name }} to ${{ inputs.environment }} by @${{ github.actor }}
+
+#       labeled       - label was added
+#       opened        - PR was created
+#       edited        - The title or body of a pull request was edited, or the base branch of a pull request was changed
+#       closed        - PR was closed; merge value can be true or false depending if commits were merged or not when closed
+#       reopened      - A previously closed PR was reopened
+#       unlabeled     - label was removed
+#       synchronize   - A pull request's head branch was updated. For example, the head branch was updated from the base branch or new commits were pushed to the head branch
+      
+on:
+  pull_request:
+    branches: main
+    types:
+      - labeled
+      - opened
+      - edited
+      - closed
+      - reopened
+      - unlabeled
+      - synchronize
+  push:
+    branches:
+      - '*-test*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: false
+        type: choice
+        options:
+        - dev
+        - staging
+        - production
+
+jobs:
+  Testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        shell: bash
+        run: |
+          echo "Hello world!"
+  #BuildAndDeploy_nodejs-lambda:
+  #  uses: stpride/.github/.github/workflows/lambda-build.yaml@main
+  #  secrets: inherit
+  #  with:
+  #    environment: ${{ inputs.environment }}
